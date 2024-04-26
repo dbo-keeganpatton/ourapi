@@ -6,6 +6,22 @@ import pandas as pd
 
 def main():
     
+    ############################################
+    #       Filter DataFrame Column List       #
+    ############################################
+
+    sleep_col = [ 
+        'day', 'awake_time', 'deep_sleep_duration', 'light_sleep_duration', 'rem_sleep_duration',
+        'restless_periods', 'time_in_bed', 'total_sleep_duration', 'average_breath', 'average_heart_rate'
+                 ]
+    
+    stress_col = ['day', 'stress_high', 'recovery_high', 'day_summary']
+    
+    activity_col = ['day', 'target_calories', 'total_calories', 'active_calories', 
+                    'high_activity_time', 'low_activity_time', 'medium_activity_time', 'resting_time',
+                    'sedentary_time', 'steps']
+
+    
 
     st.set_page_config(layout='wide')
     st.title("Dark Oura")
@@ -13,7 +29,8 @@ def main():
     token = st.sidebar.text_input("Enter Oura API Token:")
     start_date = st.sidebar.date_input("Start Date", value=pd.to_datetime("2023-12-01"))
     end_date = st.sidebar.date_input("End Date", value=pd.to_datetime("today"))
-    
+
+
     if st.sidebar.button("Get my Data!"):
         
         
@@ -30,26 +47,29 @@ def main():
             try:
                 sleep_df, stress_df, heart_df, activity_df = client.extract_data(start_date, end_date)
                 st.success("Data loaded successfully!")
-                
-                # Sleep
-                st.write("Sleep Data", sleep_df)
-                sleep_fig = client.create_sleep_viz()
-                st.plotly_chart(sleep_fig)
+               
+ 
+                col1, col2 = st.columns(2)
 
+                # Sleep, Stress, Activity Dataframe Exports
+                with col1:
+                    st.write("Sleep Data", sleep_df[sleep_col])
+                    st.write("Stress Data", stress_df[stress_col])
+                    st.write("Activity Data", activity_df[activity_col])
+                    
 
-                # Stress
-                st.write("Stress Data", stress_df)
-                stress_fig = client.create_stress_viz()
-                st.plotly_chart(stress_fig)
-                
+                # Cooresponding Visuals to the right
+                with col2:
+                    sleep_fig = client.create_sleep_viz()
+                    st.plotly_chart(sleep_fig)
+                    stress_fig = client.create_stress_viz()
+                    st.plotly_chart(stress_fig)
+                    activity_fig = client.create_activity_viz()
+                    st.plotly_chart(activity_fig)
 
-                # Activity
-                st.write("Activity Data", activity_df)
-                activity_fig = client.create_activity_viz()
-                st.plotly_chart(activity_fig)
 
                 # Heart Rate
-                st.write("Heart Rate Data", heart_df)
+                # st.write("Heart Rate Data", heart_df)
                 
 
 
