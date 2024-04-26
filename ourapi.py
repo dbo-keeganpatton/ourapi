@@ -38,22 +38,30 @@ class OuraApiClient:
 
      
     def create_sleep_viz(self):
-
         df = self.sleep[self.sleep['rem_sleep_duration']!=0]
-        
         df['record_date'] = pd.to_datetime(df['bedtime_start'], utc=True).dt.date
 
-        fig = px.bar(df, 
-            x='record_date', 
+        fig = px.bar(df, x='record_date', 
             y=['restless_periods', 'rem_sleep_duration', 'light_sleep_duration', 'deep_sleep_duration'])
-
+        
         fig.update_layout(xaxis_type='category')
+        return fig
+        
 
+    def create_stress_viz(self):
+        df = self.stress
+        fig = px.line(df, x='day', y=['stress_high'])
+        fig.update_layout(xaxis_type='category')
         return fig
 
 
+    def create_activity_viz(self):
+        df = self.activity
+        fig = px.bar(df, x='day', 
+            y=['high_activity_time', 'low_activity_time', 'medium_activity_time', 'resting_time', 'sedentary_time'])
 
-
+        fig.update_layout(xaxis_type='category')
+        return fig
 
 
 if __name__ == "__main__":
