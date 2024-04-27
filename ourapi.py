@@ -38,29 +38,52 @@ class OuraApiClient:
 
      
     def create_sleep_viz(self):
+        
+        color_palete = ['#babbf1', '#8DAAD6', '#93A399', '#D2B48C']
+
+
         df = self.sleep[self.sleep['rem_sleep_duration']!=0]
         df['record_date'] = pd.to_datetime(df['bedtime_start'], utc=True).dt.date
 
         fig = px.bar(df, x='record_date', 
-            y=['restless_periods', 'rem_sleep_duration', 'light_sleep_duration', 'deep_sleep_duration'])
+            y=['restless_periods', 'rem_sleep_duration', 'light_sleep_duration', 'deep_sleep_duration'],
+            color_discrete_sequence=color_palete)
         
         fig.update_layout(xaxis_type='category')
+     
+        all_dates = df['record_date'].unique()
+        tick_dates = all_dates[::5]  # Select every 5th date
+        fig.update_xaxes(tickvals=tick_dates, ticktext=tick_dates, tickangle=45)
+        
         return fig
         
 
     def create_stress_viz(self):
+        color_palete = ['#babbf1']
         df = self.stress
-        fig = px.line(df, x='day', y=['stress_high'])
+        fig = px.line(df, x='day', y=['stress_high'], color_discrete_sequence=color_palete)
         fig.update_layout(xaxis_type='category')
+        
+        all_dates = df['day'].unique()
+        tick_dates = all_dates[::5]  # Select every 5th date
+        fig.update_xaxes(tickvals=tick_dates, ticktext=tick_dates, tickangle=45)
+
         return fig
 
 
     def create_activity_viz(self):
+        color_palete = ['#babbf1', '#8DAAD6', '#93A399', '#D2B48C']
         df = self.activity
         fig = px.bar(df, x='day', 
-            y=['high_activity_time', 'low_activity_time', 'medium_activity_time', 'resting_time', 'sedentary_time'])
+            y=['high_activity_time', 'low_activity_time', 'medium_activity_time', 'resting_time', 'sedentary_time'],
+            color_discrete_sequence=color_palete)
 
         fig.update_layout(xaxis_type='category')
+        
+        all_dates = df['day'].unique()
+        tick_dates = all_dates[::5]  # Select every 5th date
+        fig.update_xaxes(tickvals=tick_dates, ticktext=tick_dates, tickangle=45)
+
         return fig
 
 

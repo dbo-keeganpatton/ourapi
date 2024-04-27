@@ -47,26 +47,24 @@ def main():
             try:
                 sleep_df, stress_df, heart_df, activity_df = client.extract_data(start_date, end_date)
                 st.success("Data loaded successfully!")
-               
- 
-                col1, col2 = st.columns(2)
+              
+                 
+                st.write("Stress")
+                stress_fig = client.create_stress_viz()
+                st.plotly_chart(stress_fig, use_container_width=True)
+                st.dataframe(stress_df[stress_col])
+                
+                st.write("Sleep")
+                sleep_fig = client.create_sleep_viz()
+                st.plotly_chart(sleep_fig, use_container_width=True)               
+                st.dataframe(sleep_df[sleep_col])
 
-                # Sleep, Stress, Activity Dataframe Exports
-                with col1:
-                    st.write("Sleep Data", sleep_df[sleep_col])
-                    st.write("Stress Data", stress_df[stress_col])
-                    st.write("Activity Data", activity_df[activity_col])
-                    
 
-                # Cooresponding Visuals to the right
-                with col2:
-                    sleep_fig = client.create_sleep_viz()
-                    st.plotly_chart(sleep_fig)
-                    stress_fig = client.create_stress_viz()
-                    st.plotly_chart(stress_fig)
-                    activity_fig = client.create_activity_viz()
-                    st.plotly_chart(activity_fig)
-
+                st.write("Activity")
+                activity_fig = client.create_activity_viz()
+                st.plotly_chart(activity_fig, use_container_width=True)
+                st.dataframe(activity_df[activity_col])
+                
 
                 # Heart Rate
                 # st.write("Heart Rate Data", heart_df)
