@@ -39,7 +39,7 @@ class OuraApiClient:
      
     def create_sleep_viz(self):
         
-        color_palete = ['#babbf1', '#8DAAD6', '#93A399', '#D2B48C']
+        color_palete = ['#a8a6f8', '#5b8bda', '#5e8575', '#c9a76e']
 
 
         df = self.sleep[self.sleep['rem_sleep_duration']!=0]
@@ -49,40 +49,59 @@ class OuraApiClient:
             y=['restless_periods', 'rem_sleep_duration', 'light_sleep_duration', 'deep_sleep_duration'],
             color_discrete_sequence=color_palete)
         
-        fig.update_layout(xaxis_type='category')
+        fig.update_layout(xaxis_type='category', xaxis_title="", yaxis_title="")
      
         all_dates = df['record_date'].unique()
         tick_dates = all_dates[::5]  # Select every 5th date
         fig.update_xaxes(tickvals=tick_dates, ticktext=tick_dates, tickangle=45)
         
+        fig.update_layout(legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+            ))
+
         return fig
         
-
     def create_stress_viz(self):
-        color_palete = ['#babbf1']
+        color_palete = ['#5e8575']
         df = self.stress
         fig = px.line(df, x='day', y=['stress_high'], color_discrete_sequence=color_palete)
-        fig.update_layout(xaxis_type='category')
+        fig.update_layout(xaxis_type='category', xaxis_title="", yaxis_title="")
         
         all_dates = df['day'].unique()
         tick_dates = all_dates[::5]  # Select every 5th date
         fig.update_xaxes(tickvals=tick_dates, ticktext=tick_dates, tickangle=45)
+        
+        fig.update_layout(showlegend=False)
+
 
         return fig
 
 
     def create_activity_viz(self):
-        color_palete = ['#babbf1', '#8DAAD6', '#93A399', '#D2B48C']
+        color_palete =  ['#a8a6f8', '#5b8bda', '#5e8575', '#c9a76e']       
         df = self.activity
         fig = px.bar(df, x='day', 
             y=['high_activity_time', 'low_activity_time', 'medium_activity_time', 'resting_time', 'sedentary_time'],
             color_discrete_sequence=color_palete)
 
-        fig.update_layout(xaxis_type='category')
+        fig.update_layout(xaxis_type='category', xaxis_title="", yaxis_title="")
         
         all_dates = df['day'].unique()
         tick_dates = all_dates[::5]  # Select every 5th date
         fig.update_xaxes(tickvals=tick_dates, ticktext=tick_dates, tickangle=45)
+        
+        fig.update_layout(legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+            ))
+
 
         return fig
 

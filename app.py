@@ -26,6 +26,11 @@ def main():
     st.set_page_config(layout='wide')
     st.title("Dark Oura")
     
+
+    #####################################
+    #       User Inputs on SideBar      #
+    #####################################
+
     token = st.sidebar.text_input("Enter Oura API Token:")
     start_date = st.sidebar.date_input("Start Date", value=pd.to_datetime("2023-12-01"))
     end_date = st.sidebar.date_input("End Date", value=pd.to_datetime("today"))
@@ -48,26 +53,27 @@ def main():
                 sleep_df, stress_df, heart_df, activity_df = client.extract_data(start_date, end_date)
                 st.success("Data loaded successfully!")
               
-                 
                 st.write("Stress")
-                stress_fig = client.create_stress_viz()
-                st.plotly_chart(stress_fig, use_container_width=True)
-                st.dataframe(stress_df[stress_col])
+                col1, col2 = st.columns([2,4]) 
                 
+                with col1:
+                    st.dataframe(stress_df[stress_col])
+
+                with col2:
+                    stress_fig = client.create_stress_viz()
+                    st.plotly_chart(stress_fig, use_container_width=True)
+                
+                                
                 st.write("Sleep")
                 sleep_fig = client.create_sleep_viz()
                 st.plotly_chart(sleep_fig, use_container_width=True)               
-                st.dataframe(sleep_df[sleep_col])
+                st.dataframe(sleep_df[sleep_col], use_container_width=True)
 
 
                 st.write("Activity")
                 activity_fig = client.create_activity_viz()
                 st.plotly_chart(activity_fig, use_container_width=True)
-                st.dataframe(activity_df[activity_col])
-                
-
-                # Heart Rate
-                # st.write("Heart Rate Data", heart_df)
+                st.dataframe(activity_df[activity_col], use_container_width=True)
                 
 
 
