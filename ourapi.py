@@ -34,19 +34,33 @@ class OuraApiClient:
         self.heart = self.query('heartrate', start_date, end_date)
         self.activity = self.query('daily_activity', start_date, end_date)
         
+        # Sane Time Tracking Columns
+        self.activity['High Activity'] = round( self.activity['high_activity_time'] / 60 / 60, 1)
+        self.activity['Low Activity'] = round( self.activity['low_activity_time'] / 60 / 60, 1)
+        self.activity['Medium Activity'] = round( self.activity['medium_activity_time'] / 60 / 60, 1)
+        self.activity['Rest Time'] = round( self.activity['resting_time'] / 60 / 60, 1) 
+        self.activity['Sedentary Time'] = round( self.activity['sedentary_time'] / 60 / 60, 1)
+
+        
+        self.sleep['Restless'] = round( self.sleep['restless_periods'] / 60 / 60, 1)
+        self.sleep['REM Sleep'] = round( self.sleep['rem_sleep_duration'] / 60 / 60, 1)
+        self.sleep['Light Sleep'] = round( self.sleep['light_sleep_duration'] / 60 / 60, 1)
+        self.sleep['Deep Sleep'] = round( self.sleep['deep_sleep_duration'] / 60 / 60, 1)
+
+
         return self.sleep, self.stress, self.heart, self.activity
 
      
     def create_sleep_viz(self):
         
-        color_palete = ['#a8a6f8', '#5b8bda', '#5e8575', '#c9a76e']
+        color_palete = ['#a8a6f8', '#FF6961', '#5e8575', '#c9a76e']
 
 
         df = self.sleep[self.sleep['rem_sleep_duration']!=0]
         df['record_date'] = pd.to_datetime(df['bedtime_start'], utc=True).dt.date
 
         fig = px.bar(df, x='record_date', 
-            y=['restless_periods', 'rem_sleep_duration', 'light_sleep_duration', 'deep_sleep_duration'],
+            y=['Restless', 'REM Sleep', 'Light Sleep', 'Deep Sleep'],
             color_discrete_sequence=color_palete)
         
         fig.update_layout(xaxis_type='category', xaxis_title="", yaxis_title="")
@@ -60,8 +74,9 @@ class OuraApiClient:
             yanchor="bottom",
             y=1.02,
             xanchor="right",
-            x=1
-            ))
+            x=1,
+            font=dict(size=15)
+            ), legend_title=None)
 
         return fig
         
@@ -82,10 +97,10 @@ class OuraApiClient:
 
 
     def create_activity_viz(self):
-        color_palete =  ['#a8a6f8', '#5b8bda', '#5e8575', '#c9a76e']       
+        color_palete =  ['#a8a6f8', '#FF6961', '#5e8575', '#c9a76e']       
         df = self.activity
         fig = px.bar(df, x='day', 
-            y=['high_activity_time', 'low_activity_time', 'medium_activity_time', 'resting_time', 'sedentary_time'],
+            y=['High Activity', 'Low Activity', 'Medium Activity', 'Rest Time', 'Sedentary Time'],
             color_discrete_sequence=color_palete)
 
         fig.update_layout(xaxis_type='category', xaxis_title="", yaxis_title="")
@@ -99,12 +114,19 @@ class OuraApiClient:
             yanchor="bottom",
             y=1.02,
             xanchor="right",
-            x=1
-            ))
+            x=1,
+            font=dict(size=15)
+            ), legend_title=None)
 
 
         return fig
+    
+    def avg_heartrate(self):
+        df = self.heart
+        avg = round( df['bpm'].mean(), 0)
+        return avg
 
+        
 
 if __name__ == "__main__":
     token = 'your_actual_token_here'

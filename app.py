@@ -36,15 +36,15 @@ def main():
     end_date = st.sidebar.date_input("End Date", value=pd.to_datetime("today"))
 
 
+
     if st.sidebar.button("Get my Data!"):
-        
         
         #########################################
         #       If Token is Valid Proceed       # 
         #########################################
         if token:
             client = OuraApiClient(token)
-           
+                       
 
             #####################################
             #         Main Application          #
@@ -52,28 +52,32 @@ def main():
             try:
                 sleep_df, stress_df, heart_df, activity_df = client.extract_data(start_date, end_date)
                 st.success("Data loaded successfully!")
-              
-                st.write("Stress")
-                col1, col2 = st.columns([2,4]) 
-                
-                with col1:
-                    st.dataframe(stress_df[stress_col])
+                              
 
-                with col2:
-                    stress_fig = client.create_stress_viz()
-                    st.plotly_chart(stress_fig, use_container_width=True)
+                st.subheader("Stress")
+                with st.expander('View Stress Trend'):   
+                    col1, col2 = st.columns([2,4]) 
                 
+                    with col1:
+                        st.dataframe(stress_df[stress_col])
+
+                    with col2:
+                        stress_fig = client.create_stress_viz()
+                        st.plotly_chart(stress_fig, use_container_width=True)
+             
                                 
-                st.write("Sleep")
-                sleep_fig = client.create_sleep_viz()
-                st.plotly_chart(sleep_fig, use_container_width=True)               
-                st.dataframe(sleep_df[sleep_col], use_container_width=True)
+                st.subheader("Sleep")
+                with st.expander('View Sleep Data'): 
+                    sleep_fig = client.create_sleep_viz()
+                    st.plotly_chart(sleep_fig, use_container_width=True)               
+                    st.dataframe(sleep_df[sleep_col], use_container_width=True)
 
 
-                st.write("Activity")
-                activity_fig = client.create_activity_viz()
-                st.plotly_chart(activity_fig, use_container_width=True)
-                st.dataframe(activity_df[activity_col], use_container_width=True)
+                st.subheader("Activity")
+                with st.expander('View Daily Activity'):
+                    activity_fig = client.create_activity_viz()
+                    st.plotly_chart(activity_fig, use_container_width=True)
+                    st.dataframe(activity_df[activity_col], use_container_width=True)
                 
 
 
