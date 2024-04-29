@@ -22,4 +22,4 @@ For more comprehensive usage scenarios, refer to the [official API documentation
 
 This script utilizes Streamlit to create a visual application that leverages data from the OuraApiClient. It provides a user-friendly interface to interact with the insights derived from the Oura API.
 
-[sample_image]('/images/sample.png')
+![sample_image]('/images/sample.png')
